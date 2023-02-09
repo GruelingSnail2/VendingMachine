@@ -10,16 +10,18 @@ public class VendingMachineCLI {
     private List<Item> listOfItems = secondScreen.startupInventory();
     private Transactions transactions = new Transactions();
     private UserInput userInput = new UserInput();
+    private String firstScreenUserInput = "1";
 
     public void run() {
         // entry point for the vending
         display.firstScreen();
         String userInputResponse = userInput.customerSelection(); //asks for user input
-        while (userInputResponse.equals("1")) { //will loop until leave first screen
+
+        while (userInputResponse.equals("1")&& firstScreenUserInput.equals("1")) { //will loop until leave first screen
             firstScreen(userInputResponse);
 
         }
-        while (userInputResponse.equals("2")) { //will loop until leave purchase screen
+        while (firstScreenUserInput.equals("2")) { //will loop until leave purchase screen
             secondScreen(userInputResponse);
         }
     }
@@ -34,10 +36,8 @@ public class VendingMachineCLI {
             for (Item item : listOfItems) {
                 System.out.printf("%s) %s: $%s - %s left\n", item.getSlotLocation(), item.getName(), item.getPrice(), item.getInventory());
             }
-            System.out.println("");
-            System.out.println("");
-            display.firstScreen();
-            userInputResponse = userInput.customerSelection();
+
+
 
         } else if (userInputResponse.equals("2")) {
             System.out.println("Current Money Provided: " + transactions.getCurrentBalance());
@@ -48,6 +48,10 @@ public class VendingMachineCLI {
             System.out.println("Thank you, come again :)");
             System.exit(0);
         }
+        System.out.println("");
+        System.out.println("");
+        display.firstScreen();
+        this.firstScreenUserInput = userInput.customerSelection();
     }
 
     private void secondScreen(String purchaseResponse) { //purchase screen
