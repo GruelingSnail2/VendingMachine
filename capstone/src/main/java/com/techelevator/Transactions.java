@@ -11,11 +11,12 @@ public class Transactions {
     }
 
     public void deposit(BigDecimal deposit){
-        currentBalance.add(deposit);
+        this.currentBalance=currentBalance.add(deposit);
+
     }
 
     public void purchase(BigDecimal purchase){
-        currentBalance.subtract(purchase);
+        this.currentBalance=currentBalance.subtract(purchase);
 
     }
 }
