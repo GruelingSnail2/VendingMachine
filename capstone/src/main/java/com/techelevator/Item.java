@@ -8,6 +8,7 @@ public class Item {
     private BigDecimal price;
     private String slotLocation;
     private String type;
+    private int inventory = 5;
 
 
     //getters
@@ -29,7 +30,7 @@ public class Item {
 
     public int getInventory() {
         //we might need to change this and is a derived value
-        return 5;
+        return inventory;
     }
 
     //setters
@@ -40,6 +41,10 @@ public class Item {
 
     public void setSlotLocation(String slotLocation) {
         this.slotLocation = slotLocation;
+    }
+
+    public void setInventory(int inventory){
+        this.inventory=inventory;
     }
 
     //constructor
