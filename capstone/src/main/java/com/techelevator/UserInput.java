@@ -9,17 +9,17 @@ public class UserInput {
         String customerResponse = userInput.nextLine();
         boolean customerResponseValid = true;
 
-        if(customerResponse.equals("1")||customerResponse.equals("2")||customerResponse.equals("3")){
-            customerResponseValid=true;
-        }else{
-            customerResponseValid=false;
+        if (customerResponse.equals("1") || customerResponse.equals("2") || customerResponse.equals("3")) {
+            customerResponseValid = true;
+        } else {
+            customerResponseValid = false;
             System.out.println("Error: Please enter (1), (2), or (3)");
         }
         return customerResponse;
 
     }
 
-    public String moneyInput(){
+    public String moneyInput() {
         Scanner userInput = new Scanner(System.in);
         String customerResponse = userInput.nextLine();
         switch (customerResponse) {
@@ -36,17 +36,26 @@ public class UserInput {
                 return "20";
 
             default:
-                return "Money not added - please choose valid bill";
-
+                return "0";
         }
     }
 
-    
-
-
-
-
+    public String moreMoneyInput(){
+        Scanner userInput = new Scanner(System.in);
+        String customerResponse = userInput.nextLine();
+        if(customerResponse.equals("Y") || customerResponse.equals("y")){
+            return "Y";
+        } else if (customerResponse.equals("N")||customerResponse.equals("n")){
+            return "N";
+        } else {
+            System.out.println("Please give a valid response");
+            return "A";
+        }
     }
+
+
+
+}
 
 
 
