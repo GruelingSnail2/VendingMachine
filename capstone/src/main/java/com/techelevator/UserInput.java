@@ -1,4 +1,5 @@
 package com.techelevator;
 
-public class Money {
+public class UserInput {
+
 }
