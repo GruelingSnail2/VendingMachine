@@ -3,6 +3,7 @@ package com.techelevator;
 import java.math.BigDecimal;
 
 public class Item {
+    //this class is the blueprint for the item object. it holds the various attributes of the item and lets us access them as needed.
     //attributes of item
     private String name;
     private BigDecimal price;
@@ -34,7 +35,7 @@ public class Item {
     }
 
     //setters
-    //these may be removed later
+    //these may be removed later but maybe not not sure
     public void setPrice(BigDecimal price) {
         this.price = price;
     }

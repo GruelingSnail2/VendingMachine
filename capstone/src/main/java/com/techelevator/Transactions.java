@@ -3,6 +3,7 @@ package com.techelevator;
 import java.math.BigDecimal;
 
 public class Transactions {
+    //this class will keep track of balance of the vending machine's money
    private BigDecimal currentBalance = new BigDecimal(0.00);
 
 

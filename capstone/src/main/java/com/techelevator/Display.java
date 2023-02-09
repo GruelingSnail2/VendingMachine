@@ -1,6 +1,7 @@
 package com.techelevator;
 
 public class Display {
+    //this class chooses provides the display that is needed
 
     public void firstScreen() {
         System.out.println("(1) Display Vending Machine Items");

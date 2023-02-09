@@ -13,15 +13,14 @@ public class VendingMachineCLI {
     private String firstScreenUserInput = "1";
 
     public void run() {
-        // entry point for the vending
-        display.firstScreen();
-        String userInputResponse = userInput.customerSelection(); //asks for user input
+        display.firstScreen();                                          //need to make loop if 1,2,3 not given
+        String userInputResponse = userInput.customerSelection();       //asks for user input
 
-        while (userInputResponse.equals("1")&& firstScreenUserInput.equals("1")) { //will loop until leave first screen
+        while (userInputResponse.equals("1") && firstScreenUserInput.equals("1")) { //will loop until leave first screen. second condition makes it work
             firstScreen(userInputResponse);
 
         }
-        while (firstScreenUserInput.equals("2")) { //will loop until leave purchase screen
+        while (firstScreenUserInput.equals("2")) {              //will loop until leave purchase screen
             secondScreen(userInputResponse);
         }
     }
@@ -31,33 +30,31 @@ public class VendingMachineCLI {
         cli.run();
     }
 
-    private void firstScreen(String userInputResponse) { //first screen from readme. I think this is done
+    private void firstScreen(String userInputResponse) {            //first screen from readme. Need make loop if value other than 1,2,3 is selected
         if (userInputResponse.equals("1")) {
             for (Item item : listOfItems) {
                 System.out.printf("%s) %s: $%s - %s left\n", item.getSlotLocation(), item.getName(), item.getPrice(), item.getInventory());
             }
-
-
-
         } else if (userInputResponse.equals("2")) {
             System.out.println("Current Money Provided: " + transactions.getCurrentBalance());
             display.purchaseScreen();
 
-
         } else if (userInputResponse.equals("3")) {
             System.out.println("Thank you, come again :)");
             System.exit(0);
+        } else {
+            display.firstScreen();
         }
         System.out.println("");
         System.out.println("");
         display.firstScreen();
-        this.firstScreenUserInput = userInput.customerSelection();
+        this.firstScreenUserInput = userInput.customerSelection();  //changes attribute to force break out of first while loop
     }
 
-    private void secondScreen(String purchaseResponse) { //purchase screen
+    private void secondScreen(String purchaseResponse) {            //purchase screen
         display.purchaseScreen();
-        purchaseResponse= userInput.customerSelection();
-        if (purchaseResponse.equals("1")) {  //will let us add money
+        purchaseResponse = userInput.customerSelection();
+        if (purchaseResponse.equals("1")) {                         //will let us add money. This one is working
             String continueAddingMoney = "";
             while (!continueAddingMoney.equals("N")) {
                 System.out.println("Current Money Provided: " + transactions.getCurrentBalance());
@@ -68,15 +65,16 @@ public class VendingMachineCLI {
                 continueAddingMoney = userInput.moreMoneyInput();
             }
             System.out.println("You have entered: $" + transactions.getCurrentBalance());
-        } else if (purchaseResponse.equals("2")) {  //will send to screen with list of items and ask for items location to choose item
+        } else if (purchaseResponse.equals("2")) {                  //will send to screen with list of items and ask for items location to choose item.
+                                                                    //This is where we can add inventory to track, give message depending on type, and log transactions
             System.out.println("Please select item alphanumeric location");
-            for (Item item : listOfItems) {  //prints list of items with info
+            for (Item item : listOfItems) {                         //prints list of items with info
                 System.out.printf("%s) %s: $%s - %s left\n", item.getSlotLocation(), item.getName(), item.getPrice(), item.getInventory());
             }
-            String purchaseChoice = userInput.itemChoice();  //user choice
-            for (Item item : listOfItems) { //will compare all items in list's slot location to one input by user
+            String purchaseChoice = userInput.itemChoice();         //user choice
+            for (Item item : listOfItems) {                         //will compare all items in list's slot location to one input by user
                 if (item.getSlotLocation().equals(purchaseChoice)) {
-                    if(item.getPrice().compareTo(transactions.getCurrentBalance())>0){
+                    if (item.getPrice().compareTo(transactions.getCurrentBalance()) > 0) {
                         System.out.println("Please add more money");
                     } else {
                         System.out.printf("%s costs %s: %s balance remaining", item.getName(), item.getPrice(), transactions.getCurrentBalance().subtract(item.getPrice()));
@@ -84,7 +82,7 @@ public class VendingMachineCLI {
                     }
                 }
             }
-        } else if (purchaseResponse.equals("3")){
+        } else if (purchaseResponse.equals("3")) {                  //this option sets balance to 0, calculates change to give, and return to first screen
 
         }
     }

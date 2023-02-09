@@ -3,24 +3,21 @@ package com.techelevator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class UserInput {
+    //this class generally takes in user input in the console and returns something that is then used in the main class to decide what to do next
 
-    public String customerSelection() {
+    public String customerSelection() {  //this method is used twice for the first and second screens
         Scanner userInput = new Scanner(System.in);
         String customerResponse = userInput.nextLine();
-        boolean customerResponseValid = true;
 
         if (customerResponse.equals("1") || customerResponse.equals("2") || customerResponse.equals("3")) {
-            customerResponseValid = true;
+            return customerResponse;
         } else {
-            customerResponseValid = false;
             System.out.println("Error: Please enter (1), (2), or (3)");
         }
         return customerResponse;
-
     }
 
     public BigDecimal moneyInput() {
