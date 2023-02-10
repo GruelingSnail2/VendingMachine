@@ -56,7 +56,30 @@ public class FileInput {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public void salesReport(String name,int numSold) {
+//        LocalDateTime date = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a");
+//        String text = date.format(formatter);
+        String fileName = "salesreport.txt";
+        File sales= new File(fileName);
+        try (FileOutputStream out = new FileOutputStream(sales, true); PrintWriter writer = new PrintWriter(out,true)) {
+            writer.printf(" %s|%d\n",name,numSold);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void totalSales(BigDecimal totalSales){
+        String fileName = "salesreport.txt";
+        File sales= new File(fileName);
+        try (FileOutputStream out = new FileOutputStream(sales, true); PrintWriter writer = new PrintWriter(out,true)) {
+            writer.println("");
+            writer.printf(" **TOTAL SALES** $%s\n",totalSales.setScale(2));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

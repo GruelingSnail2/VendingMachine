@@ -25,6 +25,8 @@ public class VendingMachineCLI {
         }
         if(userInputResponse.equals("3")){
             firstScreen("3");
+        } else {
+            firstScreen("4");
         }
     }
 
@@ -46,6 +48,15 @@ public class VendingMachineCLI {
             System.out.println("Thank you, come again :)");
             secondScreen.endSession();
             System.exit(0);
+        } else if (userInputResponse.equals("4")){
+            BigDecimal totalSales = BigDecimal.ZERO;
+            for(Item item: listOfItems){
+                secondScreen.salesReport(item.getName(), 5-item.getInventory());
+                BigDecimal itemsSold = new BigDecimal(5-item.getInventory());
+                totalSales = totalSales.add(item.getPrice().multiply(itemsSold));
+            }
+            secondScreen.totalSales(totalSales.setScale(2));
+            run();
         }
         System.out.println("");
         System.out.println("");
@@ -62,9 +73,6 @@ public class VendingMachineCLI {
                 System.out.println("Current Money Provided: $" + transactions.getCurrentBalance().setScale(2));
                 display.feedMoneyScreen();
                 BigDecimal moneyIn = userInput.moneyInput();
-                if(!moneyIn.equals(1)||!moneyIn.equals(5)||!moneyIn.equals(10)||!moneyIn.equals(20)){  //checks for valid money amount
-                    System.out.println("Please enter a valid amount");
-                }
                 transactions.deposit(moneyIn);
                 System.out.println("Current Money Provided: $" + transactions.getCurrentBalance().setScale(2));
                 display.moreMoneyScreen();
@@ -72,6 +80,7 @@ public class VendingMachineCLI {
                 secondScreen.log("FEED MONEY", moneyIn,transactions.getCurrentBalance());
             }
             System.out.println("You have entered: $" + transactions.getCurrentBalance().setScale(2));
+            secondScreen();
         } else if (purchaseResponse.equals("2")) {                  //will send to screen with list of items and ask for items location to choose item.
             //This is where we can add inventory to track, give message depending on type, and log transactions
 
@@ -105,6 +114,7 @@ public class VendingMachineCLI {
                     }
                 }
             }
+            secondScreen();
         } else if (purchaseResponse.equals("3")) {
             //this option sets balance to 0, calculates change to give, and return to first screen
             String[] changeName = {"quarters", "dimes", "nickels"};
@@ -116,5 +126,6 @@ public class VendingMachineCLI {
             secondScreen.log("GIVE CHANGE", changeToGive,transactions.getCurrentBalance());
             run();
         }
+
     }
 }
