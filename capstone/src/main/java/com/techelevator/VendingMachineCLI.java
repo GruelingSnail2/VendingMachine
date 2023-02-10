@@ -15,13 +15,12 @@ public class VendingMachineCLI {
     public void run() {
         display.firstScreen();                                          //need to make loop if 1,2,3 not given
         String userInputResponse = userInput.customerSelection();       //asks for user input
-
         while (userInputResponse.equals("1") && firstScreenUserInput.equals("1")) { //will loop until leave first screen. second condition makes it work
             firstScreen(userInputResponse);
 
         }
-        while (firstScreenUserInput.equals("2")) {              //will loop until leave purchase screen
-            secondScreen(userInputResponse);
+        while (firstScreenUserInput.equals("2")||userInputResponse.equals("2")) {              //will loop until leave purchase screen
+            secondScreen();
         }
     }
 
@@ -51,9 +50,9 @@ public class VendingMachineCLI {
         this.firstScreenUserInput = userInput.customerSelection();  //changes attribute to force break out of first while loop
     }
 
-    private void secondScreen(String purchaseResponse) {            //purchase screen
+    private void secondScreen() {            //purchase screen
         display.purchaseScreen();
-        purchaseResponse = userInput.customerSelection();
+        String purchaseResponse = userInput.customerSelection();
         if (purchaseResponse.equals("1")) {                         //will let us add money. This one is working
             String continueAddingMoney = "";
             while (!continueAddingMoney.equals("N")) {
@@ -67,10 +66,12 @@ public class VendingMachineCLI {
             System.out.println("You have entered: $" + transactions.getCurrentBalance());
         } else if (purchaseResponse.equals("2")) {                  //will send to screen with list of items and ask for items location to choose item.
                                                                     //This is where we can add inventory to track, give message depending on type, and log transactions
-            System.out.println("Please select item alphanumeric location");
+
             for (Item item : listOfItems) {                         //prints list of items with info
                 System.out.printf("%s) %s: $%s - %s left\n", item.getSlotLocation(), item.getName(), item.getPrice(), item.getInventory());
             }
+            System.out.println("");
+            System.out.println("Please select item alphanumeric location");
             String purchaseChoice = userInput.itemChoice();         //user choice
             for (Item item : listOfItems) {                         //will compare all items in list's slot location to one input by user
                 if (item.getSlotLocation().equals(purchaseChoice)) {

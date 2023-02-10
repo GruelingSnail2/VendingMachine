@@ -81,7 +81,6 @@ public class UserInput {
             System.out.println("Item does not exist");
             return "";
         } else {
-            System.out.println(customerResponse);
             return customerResponse;
         }
 
