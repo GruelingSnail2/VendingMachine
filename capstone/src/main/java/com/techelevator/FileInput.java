@@ -2,6 +2,8 @@ package com.techelevator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -31,6 +33,18 @@ public class FileInput {
             e.printStackTrace();
         }
         return listOfItems;
+    }
+
+    public void log(){
+        String fileName = "log.txt";
+        File logFile = new File(fileName);
+        try(FileOutputStream out = new FileOutputStream(logFile,true)){
+            PrintWriter writer = new PrintWriter(out){
+                writer.printf("%s%s%s")
+            }
+        }
+
+
     }
 
 

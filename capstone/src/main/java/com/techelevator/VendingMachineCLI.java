@@ -41,8 +41,6 @@ public class VendingMachineCLI {
         } else if (userInputResponse.equals("3")) {
             System.out.println("Thank you, come again :)");
             System.exit(0);
-        } else {
-            display.firstScreen();
         }
         System.out.println("");
         System.out.println("");
@@ -68,7 +66,7 @@ public class VendingMachineCLI {
                                                                     //This is where we can add inventory to track, give message depending on type, and log transactions
 
             for (Item item : listOfItems) {                         //prints list of items with info
-                System.out.printf("%s) %s: $%s - %s left\n", item.getSlotLocation(), item.getName(), item.getPrice(), item.getInventory());
+                System.out.printf("%s) %s: $%s - remaining: %s \n", item.getSlotLocation(), item.getName(), item.getPrice(), (item.getInventory()==0)?"SOLD OUT":item.getInventory());
             }
             System.out.println("");
             System.out.println("Please select item alphanumeric location");
@@ -77,14 +75,37 @@ public class VendingMachineCLI {
                 if (item.getSlotLocation().equals(purchaseChoice)) {
                     if (item.getPrice().compareTo(transactions.getCurrentBalance()) > 0) {
                         System.out.println("Please add more money");
-                    } else {
-                        System.out.printf("%s costs %s: %s balance remaining", item.getName(), item.getPrice(), transactions.getCurrentBalance().subtract(item.getPrice()));
+                    } else if(item.getInventory()<1){
+                        System.out.println("SOLD OUT");
+                    }
+
+                    else {
+                        System.out.printf("%s costs %s: %s balance remaining\n", item.getName(), item.getPrice(), transactions.getCurrentBalance().subtract(item.getPrice()));
                         transactions.purchase(item.getPrice());
+                        item.itemSale();
+                        if (item.getSlotLocation().startsWith("A")){
+                            System.out.println("Crunch Crunch, Yum!");
+
+                        }else if(item.getSlotLocation().startsWith("B")){
+                            System.out.println("Munch Munch, Yum!");
+                        }else if(item.getSlotLocation().startsWith("C")){
+                            System.out.println("Glug Glug, Yum!");
+                        }else{
+                            System.out.println("Chew Chew, Yum!");
+                        }
+
                     }
                 }
             }
-        } else if (purchaseResponse.equals("3")) {                  //this option sets balance to 0, calculates change to give, and return to first screen
+        } else if (purchaseResponse.equals("3")) {
+            //this option sets balance to 0, calculates change to give, and return to first screen
+            String[] changeName = {"quarters","dimes","nickels"};
+            BigDecimal[] change = transactions.change();
+            for(int i =0; i<3;i++){
 
+                System.out.println("Your change is: "+ change[i]+" "+changeName[i]);
+            }
+            firstScreen("");
         }
     }
 }

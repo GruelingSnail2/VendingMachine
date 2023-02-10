@@ -12,6 +12,7 @@ public class Item {
     private int inventory = 5;
 
 
+
     //getters
     public BigDecimal getPrice() {
         return price;
@@ -30,9 +31,10 @@ public class Item {
     }
 
     public int getInventory() {
-        //we might need to change this and is a derived value
-        return inventory;
-    }
+
+        return inventory;}
+
+
 
     //setters
     //these may be removed later but maybe not not sure
@@ -46,6 +48,9 @@ public class Item {
 
     public void setInventory(int inventory){
         this.inventory=inventory;
+    }
+    public void itemSale(){
+        inventory= inventory-1;
     }
 
     //constructor
