@@ -1,11 +1,11 @@
 package com.techelevator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -26,7 +26,7 @@ public class FileInput {
                 BigDecimal priceInput = new BigDecimal(Double.parseDouble(lineArr[2]));
                 BigDecimal priceOutput = priceInput.setScale(2, RoundingMode.HALF_UP);
                 String type = lineArr[3];
-                listOfItems.add(new Item(productName,priceOutput,slotLocation,type));
+                listOfItems.add(new Item(productName, priceOutput, slotLocation, type));
             }
 
         } catch (FileNotFoundException e) {
@@ -35,15 +35,27 @@ public class FileInput {
         return listOfItems;
     }
 
-    public void log(){
+    public void log(String item,BigDecimal input, BigDecimal balance) {
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss a");
+        String text = date.format(formatter);
         String fileName = "log.txt";
         File logFile = new File(fileName);
-        try(FileOutputStream out = new FileOutputStream(logFile,true)){
-            PrintWriter writer = new PrintWriter(out){
-                writer.printf("%s%s%s")
-            }
+        try (FileOutputStream out = new FileOutputStream(logFile, true); PrintWriter writer = new PrintWriter(out,true)) {
+             writer.printf(" %s %s $%s $%s\n",text,item,input,balance);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
+    public void endSession(){
+        String fileName = "log.txt";
+        File logFile = new File(fileName);
+        try (FileOutputStream out = new FileOutputStream(logFile, true); PrintWriter writer = new PrintWriter(out,true)) {
+            writer.println("**********************************************");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

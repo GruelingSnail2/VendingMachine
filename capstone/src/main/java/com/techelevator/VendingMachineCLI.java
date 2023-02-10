@@ -1,6 +1,7 @@
 package com.techelevator;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.List;
 
 public class VendingMachineCLI {
@@ -11,16 +12,19 @@ public class VendingMachineCLI {
     private Transactions transactions = new Transactions();
     private UserInput userInput = new UserInput();
     private String firstScreenUserInput = "1";
+    private MathContext scale = new MathContext(2);
 
     public void run() {
         display.firstScreen();                                          //need to make loop if 1,2,3 not given
         String userInputResponse = userInput.customerSelection();       //asks for user input
         while (userInputResponse.equals("1") && firstScreenUserInput.equals("1")) { //will loop until leave first screen. second condition makes it work
             firstScreen(userInputResponse);
-
         }
-        while (firstScreenUserInput.equals("2")||userInputResponse.equals("2")) {              //will loop until leave purchase screen
+        while (firstScreenUserInput.equals("2") || userInputResponse.equals("2")) {              //will loop until leave purchase screen
             secondScreen();
+        }
+        if(userInputResponse.equals("3")){
+            firstScreen("3");
         }
     }
 
@@ -40,6 +44,7 @@ public class VendingMachineCLI {
 
         } else if (userInputResponse.equals("3")) {
             System.out.println("Thank you, come again :)");
+            secondScreen.endSession();
             System.exit(0);
         }
         System.out.println("");
@@ -51,22 +56,27 @@ public class VendingMachineCLI {
     private void secondScreen() {            //purchase screen
         display.purchaseScreen();
         String purchaseResponse = userInput.customerSelection();
-        if (purchaseResponse.equals("1")) {                         //will let us add money. This one is working
+        if (purchaseResponse.equals("1")) {                         //will let us add money.
             String continueAddingMoney = "";
-            while (!continueAddingMoney.equals("N")) {
-                System.out.println("Current Money Provided: " + transactions.getCurrentBalance());
+            while (!continueAddingMoney.equals("N")) {  //will run until user enters "n" or "N"
+                System.out.println("Current Money Provided: $" + transactions.getCurrentBalance().setScale(2));
                 display.feedMoneyScreen();
-                transactions.deposit(userInput.moneyInput());
-                System.out.println("Current Money Provided: " + transactions.getCurrentBalance());
+                BigDecimal moneyIn = userInput.moneyInput();
+                if(!moneyIn.equals(1)||!moneyIn.equals(5)||!moneyIn.equals(10)||!moneyIn.equals(20)){  //checks for valid money amount
+                    System.out.println("Please enter a valid amount");
+                }
+                transactions.deposit(moneyIn);
+                System.out.println("Current Money Provided: $" + transactions.getCurrentBalance().setScale(2));
                 display.moreMoneyScreen();
                 continueAddingMoney = userInput.moreMoneyInput();
+                secondScreen.log("FEED MONEY", moneyIn,transactions.getCurrentBalance());
             }
-            System.out.println("You have entered: $" + transactions.getCurrentBalance());
+            System.out.println("You have entered: $" + transactions.getCurrentBalance().setScale(2));
         } else if (purchaseResponse.equals("2")) {                  //will send to screen with list of items and ask for items location to choose item.
-                                                                    //This is where we can add inventory to track, give message depending on type, and log transactions
+            //This is where we can add inventory to track, give message depending on type, and log transactions
 
             for (Item item : listOfItems) {                         //prints list of items with info
-                System.out.printf("%s) %s: $%s - remaining: %s \n", item.getSlotLocation(), item.getName(), item.getPrice(), (item.getInventory()==0)?"SOLD OUT":item.getInventory());
+                System.out.printf("%s) %s: $%s - remaining: %s \n", item.getSlotLocation(), item.getName(), item.getPrice(), (item.getInventory() == 0) ? "SOLD OUT" : item.getInventory());
             }
             System.out.println("");
             System.out.println("Please select item alphanumeric location");
@@ -75,37 +85,36 @@ public class VendingMachineCLI {
                 if (item.getSlotLocation().equals(purchaseChoice)) {
                     if (item.getPrice().compareTo(transactions.getCurrentBalance()) > 0) {
                         System.out.println("Please add more money");
-                    } else if(item.getInventory()<1){
+                    } else if (item.getInventory() < 1) {
                         System.out.println("SOLD OUT");
-                    }
-
-                    else {
+                    } else {
                         System.out.printf("%s costs %s: %s balance remaining\n", item.getName(), item.getPrice(), transactions.getCurrentBalance().subtract(item.getPrice()));
                         transactions.purchase(item.getPrice());
                         item.itemSale();
-                        if (item.getSlotLocation().startsWith("A")){
+                        if (item.getSlotLocation().startsWith("A")) {
                             System.out.println("Crunch Crunch, Yum!");
-
-                        }else if(item.getSlotLocation().startsWith("B")){
+                        } else if (item.getSlotLocation().startsWith("B")) {
                             System.out.println("Munch Munch, Yum!");
-                        }else if(item.getSlotLocation().startsWith("C")){
+
+                        } else if (item.getSlotLocation().startsWith("C")) {
                             System.out.println("Glug Glug, Yum!");
-                        }else{
+                        } else {
                             System.out.println("Chew Chew, Yum!");
                         }
-
+                        secondScreen.log(item.getName(), item.getPrice(),transactions.getCurrentBalance());
                     }
                 }
             }
         } else if (purchaseResponse.equals("3")) {
             //this option sets balance to 0, calculates change to give, and return to first screen
-            String[] changeName = {"quarters","dimes","nickels"};
+            String[] changeName = {"quarters", "dimes", "nickels"};
+            BigDecimal changeToGive = transactions.getCurrentBalance();
             BigDecimal[] change = transactions.change();
-            for(int i =0; i<3;i++){
-
-                System.out.println("Your change is: "+ change[i]+" "+changeName[i]);
+            for (int i = 0; i < 3; i++) {
+                System.out.println("Your change is: " + change[i].setScale(0) + " " + changeName[i]);
             }
-            firstScreen("");
+            secondScreen.log("GIVE CHANGE", changeToGive,transactions.getCurrentBalance());
+            run();
         }
     }
 }

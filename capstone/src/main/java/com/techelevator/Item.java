@@ -12,7 +12,6 @@ public class Item {
     private int inventory = 5;
 
 
-
     //getters
     public BigDecimal getPrice() {
         return price;
@@ -32,8 +31,8 @@ public class Item {
 
     public int getInventory() {
 
-        return inventory;}
-
+        return inventory;
+    }
 
 
     //setters
@@ -46,22 +45,21 @@ public class Item {
         this.slotLocation = slotLocation;
     }
 
-    public void setInventory(int inventory){
-        this.inventory=inventory;
+    public void setInventory(int inventory) {
+        this.inventory = inventory;
     }
-    public void itemSale(){
-        inventory= inventory-1;
+
+    public void itemSale() {
+        inventory = inventory - 1;
     }
 
     //constructor
-    public Item(String name, BigDecimal cost, String slotLocation, String type){
-        this.name=name;
-        this.price =cost;
-        this.slotLocation=slotLocation;
+    public Item(String name, BigDecimal cost, String slotLocation, String type) {
+        this.name = name;
+        this.price = cost;
+        this.slotLocation = slotLocation;
         this.type = type;
     }
-
-
 
 
 }

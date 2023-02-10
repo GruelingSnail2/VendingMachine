@@ -30,7 +30,7 @@ public class Transactions {
 
     public BigDecimal[] change() {
         MathContext scale = new MathContext(2);
-        BigDecimal quarter = new BigDecimal(0.25,scale);
+        BigDecimal quarter = new BigDecimal(0.25, scale);
         BigDecimal dime = new BigDecimal(0.10, scale);
         BigDecimal nickel = new BigDecimal(0.05, scale);
 
@@ -38,13 +38,13 @@ public class Transactions {
         BigDecimal[] idunno = new BigDecimal[2];
         idunno = currentBalance.divideAndRemainder(quarter);
 
-        change[0]= idunno[0];
-        currentBalance=idunno[1];
+        change[0] = idunno[0];
+        currentBalance = idunno[1];
 
         idunno = currentBalance.divideAndRemainder(dime);
 
         change[1] = idunno[0];
-        currentBalance=idunno[1];
+        currentBalance = idunno[1];
         idunno = currentBalance.divideAndRemainder(nickel);
 
         change[2] = idunno[0];
