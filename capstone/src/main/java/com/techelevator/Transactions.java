@@ -36,6 +36,7 @@ public class Transactions {
 
         BigDecimal[] change = new BigDecimal[3];
         BigDecimal[] idunno = new BigDecimal[2];
+
         idunno = currentBalance.divideAndRemainder(quarter);
 
         change[0] = idunno[0];

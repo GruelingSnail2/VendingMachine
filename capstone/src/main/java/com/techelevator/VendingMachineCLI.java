@@ -27,11 +27,7 @@ public class VendingMachineCLI {
         boolean isOnFirstScreen = true;
         while (isOnFirstScreen) {
             if (userInputResponse.equals("1")) {  //this is working correctly
-                for (Item item : listOfItems) {
-                    System.out.printf("%s) %s: $%s - Remaining: %s\n", item.getSlotLocation(), item.getName(), item.getPrice(), item.getInventory());
-                }
-                System.out.println("");
-                System.out.println("");
+                printListOfItems();
                 display.firstScreen();
                 userInputResponse = userInput.customerSelection();
             } else if (userInputResponse.equals("2")) {  //this is working correctly
@@ -59,12 +55,13 @@ public class VendingMachineCLI {
         display.purchaseScreen();
         String purchaseResponse = userInput.customerSelection();
         boolean isOnSecondScreen = true;
-        while(isOnSecondScreen) {
+        while(isOnSecondScreen) {    // this is looping strangely
             if (purchaseResponse.equals("1")) {
                 feedMoney();
+                isOnSecondScreen=false;
             } else if (purchaseResponse.equals("2")) {
                 buySomething();
-
+                isOnSecondScreen=false;
             } else if (purchaseResponse.equals("3")) {
                 endSession();
                 isOnSecondScreen=false;
@@ -131,6 +128,14 @@ public class VendingMachineCLI {
             System.out.println("Your change is: " + change[i].setScale(0) + " " + changeName[i]);
         }
         secondScreen.log("GIVE CHANGE", changeToGive, transactions.getCurrentBalance());
+    }
+
+    private void printListOfItems(){
+        for (Item item : listOfItems) {
+            System.out.printf("%s) %s: $%s - Remaining: %s\n", item.getSlotLocation(), item.getName(), item.getPrice(), item.getInventory());
+        }
+        System.out.println("");
+        System.out.println("");
     }
 }
 
