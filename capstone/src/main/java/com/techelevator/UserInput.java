@@ -6,9 +6,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class UserInput {
-    //this class generally takes in user input in the console and returns something that is then used in the main class to decide what to do next
 
-    public String customerSelection() {  //this method is used twice for the first and second screens
+    //this class deals with any user interactions (input or output)
+
+    public String customerSelection() { //used for first two screens
         Scanner userInput = new Scanner(System.in);
         String customerResponse = userInput.nextLine();
 
@@ -20,30 +21,27 @@ public class UserInput {
         return customerResponse;
     }
 
-    public BigDecimal moneyInput() {
+    public BigDecimal moneyInput() { //lets user add money to balance
         Scanner userInput = new Scanner(System.in);
         String customerResponse = userInput.nextLine();
         BigDecimal five = BigDecimal.valueOf(5.00);
         BigDecimal twenty = BigDecimal.valueOf(20.00);
         switch (customerResponse) {
             case "1":
-
                 return BigDecimal.ONE;
-
             case "5":
                 return five;
             case "10":
                 return BigDecimal.TEN;
-
             case "20":
                 return twenty;
-
             default:
+                System.out.println("Please enter in a number/valid response");
                 return BigDecimal.ZERO;
         }
     }
 
-    public String moreMoneyInput() {
+    public String moreMoneyInput() { //asks if user wants to add more money
         Scanner userInput = new Scanner(System.in);
         String customerResponse = userInput.nextLine();
         if (customerResponse.equals("Y") || customerResponse.equals("y")) {
@@ -56,7 +54,7 @@ public class UserInput {
         }
     }
 
-    public String itemChoice() {
+    public String itemChoice() { //lets user choose snack
         Scanner userInput = new Scanner(System.in);
         String customerResponse = userInput.nextLine();
         List<String> goodResponses = new ArrayList<>();
@@ -83,7 +81,30 @@ public class UserInput {
         } else {
             return customerResponse;
         }
+    }
 
+    public void firstScreen() {
+        System.out.println("(1) Display Vending Machine Items");
+        System.out.println("(2) Purchase");
+        System.out.println("(3) Exit");
+    }
+
+    public void purchaseScreen() {
+
+        System.out.println("");
+
+        System.out.println("(1) Feed Money");
+        System.out.println("(2) Select Product");
+        System.out.println("(3) Finish Transaction");
+
+    }
+
+    public void feedMoneyScreen() {
+        System.out.println("Enter bill amount: 1, 5, 10, or 20");
+    }
+
+    public void moreMoneyScreen() {
+        System.out.println("Would you like to add another bill? (Y/N)");
     }
 
 

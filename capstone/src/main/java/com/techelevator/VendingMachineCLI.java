@@ -1,42 +1,36 @@
 package com.techelevator;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.List;
 
 public class VendingMachineCLI {
 
-    private Display display = new Display();
     private FileInput secondScreen = new FileInput();
     private List<Item> listOfItems = secondScreen.startupInventory();
     private Transactions transactions = new Transactions();
     private UserInput userInput = new UserInput();
-
-    public void run() {
-        display.firstScreen();
-        String userInputResponse = userInput.customerSelection();
-        firstScreen(userInputResponse);
-    }
 
     public static void main(String[] args) {
         VendingMachineCLI cli = new VendingMachineCLI();
         cli.run();
     }
 
-    private void firstScreen(String userInputResponse) {            //first screen from readme. Need make loop if value other than 1,2,3 is selected
+    public void run() { //entry point will send to here
+        firstScreen();
+    }
+
+    private void firstScreen() { //first screen that is seen by user that lets them list the items for sale, purchase something, or exit the vending machine
         boolean isOnFirstScreen = true;
-        while (isOnFirstScreen) {
-            if (userInputResponse.equals("1")) {  //this is working correctly
+        while (isOnFirstScreen) { //loops on first screen until 3 is entered by user, signifying leaving the vending machine
+            userInput.firstScreen();
+            String userInputResponse = userInput.customerSelection();
+            if (userInputResponse.equals("1")) {
                 printListOfItems();
-                display.firstScreen();
-                userInputResponse = userInput.customerSelection();
-            } else if (userInputResponse.equals("2")) {  //this is working correctly
+            } else if (userInputResponse.equals("2")) {
+                secondScreen();
+            } else if (userInputResponse.equals("3")) {
                 isOnFirstScreen = false;
-            } else if (userInputResponse.equals("3")) {  //this is working
-                System.out.println("Thank you, come again :)");
-                secondScreen.endSession();
-                System.exit(0);
-            } else if (userInputResponse.equals("4")) {  //this is working
+            } else if (userInputResponse.equals("4")) { //secret sales report option for owner of vending machine. prints to .txt file
                 BigDecimal totalSales = BigDecimal.ZERO;
                 for (Item item : listOfItems) {
                     secondScreen.salesReport(item.getName(), 5 - item.getInventory());
@@ -44,66 +38,57 @@ public class VendingMachineCLI {
                     totalSales = totalSales.add(item.getPrice().multiply(itemsSold));
                 }
                 secondScreen.totalSales(totalSales.setScale(2));
-                userInputResponse=userInput.customerSelection();
             }
         }
-        System.out.println("Current Money Provided: " + transactions.getCurrentBalance());
-        secondScreen();
+        System.out.println("Thank you, please come again soon :)");
     }
 
     private void secondScreen() {
-        display.purchaseScreen();
-        String purchaseResponse = userInput.customerSelection();
         boolean isOnSecondScreen = true;
-        while(isOnSecondScreen) {    // this is looping strangely
+        while(isOnSecondScreen) {  //purchase screen. will loop until done, then will send back to first screen
+            userInput.purchaseScreen();
+            String purchaseResponse = userInput.customerSelection();
             if (purchaseResponse.equals("1")) {
                 feedMoney();
-                isOnSecondScreen=false;
             } else if (purchaseResponse.equals("2")) {
                 buySomething();
-                isOnSecondScreen=false;
             } else if (purchaseResponse.equals("3")) {
                 endSession();
                 isOnSecondScreen=false;
             }
         }
-        display.firstScreen();
-        purchaseResponse= userInput.customerSelection();
-        firstScreen(purchaseResponse);
     }
 
-    private void feedMoney(){
+    private void feedMoney(){  //allows user to add money to balance
         String continueAddingMoney = "";
-        while (!continueAddingMoney.equals("N")) {  //will run until user enters "n" or "N"
+        while (!continueAddingMoney.equals("N")) {  //loops until user indicates they no longer want to add money
             System.out.println("Current Money Provided: $" + transactions.getCurrentBalance().setScale(2));
-            display.feedMoneyScreen();
+            userInput.feedMoneyScreen();
             BigDecimal moneyIn = userInput.moneyInput();
             transactions.deposit(moneyIn);
             System.out.println("Current Money Provided: $" + transactions.getCurrentBalance().setScale(2));
-            display.moreMoneyScreen();
+            userInput.moreMoneyScreen();
             continueAddingMoney = userInput.moreMoneyInput();
             secondScreen.log("FEED MONEY", moneyIn, transactions.getCurrentBalance());
         }
         System.out.println("You have entered: $" + transactions.getCurrentBalance().setScale(2));
     }
 
-    private void buySomething(){
-        for (Item item : listOfItems) {                         //prints list of items with info
-            System.out.printf("%s) %s: $%s - remaining: %s \n", item.getSlotLocation(), item.getName(), item.getPrice(), (item.getInventory() == 0) ? "SOLD OUT" : item.getInventory());
-        }
-        System.out.println("");
+    private void buySomething(){ //allows user to choose item to purchase
+        printListOfItems();
         System.out.println("Please select item alphanumeric location");
-        String purchaseChoice = userInput.itemChoice();         //user choice
-        for (Item item : listOfItems) {                         //will compare all items in list's slot location to one input by user
+        String purchaseChoice = userInput.itemChoice();
+        for (Item item : listOfItems) { //loops through list of items and compares user input to the location for each item
             if (item.getSlotLocation().equals(purchaseChoice)) {
-                if (item.getPrice().compareTo(transactions.getCurrentBalance()) > 0) {
+                if (item.getPrice().compareTo(transactions.getCurrentBalance()) > 0) { //checks if the user has added enough money to purchase the item
                     System.out.println("Please add more money");
-                } else if (item.getInventory() < 1) {
+                } else if (item.getInventory() < 1) {  //checks if machine has enough inventory to sell to user
                     System.out.println("SOLD OUT");
                 } else {
                     System.out.printf("%s costs %s: %s balance remaining\n", item.getName(), item.getPrice(), transactions.getCurrentBalance().subtract(item.getPrice()));
                     transactions.purchase(item.getPrice());
                     item.itemSale();
+                    //prints out appropriate message based on item type
                     if (item.getSlotLocation().startsWith("A")) {
                         System.out.println("Crunch Crunch, Yum!");
                     } else if (item.getSlotLocation().startsWith("B")) {
@@ -120,7 +105,7 @@ public class VendingMachineCLI {
         }
     }
 
-    private void endSession(){
+    private void endSession(){  //will return change to user when they are done and will send them back to the first screen
         String[] changeName = {"quarters", "dimes", "nickels"};
         BigDecimal changeToGive = transactions.getCurrentBalance();
         BigDecimal[] change = transactions.change();
@@ -130,7 +115,7 @@ public class VendingMachineCLI {
         secondScreen.log("GIVE CHANGE", changeToGive, transactions.getCurrentBalance());
     }
 
-    private void printListOfItems(){
+    private void printListOfItems(){  //used whenever printing list of items
         for (Item item : listOfItems) {
             System.out.printf("%s) %s: $%s - Remaining: %s\n", item.getSlotLocation(), item.getName(), item.getPrice(), item.getInventory());
         }

@@ -1,12 +1,10 @@
 package com.techelevator;
 
-import com.sun.source.tree.UsesTree;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 
 public class Transactions {
-    //this class will keep track of balance of the vending machine's money
+    //this class keeps track of all the money going into and out of the machine
     private BigDecimal currentBalance = new BigDecimal(0.00);
 
 
@@ -14,42 +12,28 @@ public class Transactions {
         return currentBalance;
     }
 
-    public void deposit(BigDecimal deposit) {
+    public void deposit(BigDecimal deposit) { //used to add money to current balance when user feeds money
         this.currentBalance = currentBalance.add(deposit);
-
     }
 
-    public void purchase(BigDecimal purchase) {
+    public void purchase(BigDecimal purchase) { //used to subtract money to current balance when user buys something
         this.currentBalance = currentBalance.subtract(purchase);
-
     }
 
-    public void setCurrentBalance(BigDecimal currentBalance) {
-        this.currentBalance = currentBalance;
-    }
-
-    public BigDecimal[] change() {
+    public BigDecimal[] change() { //gives out change in quarters, nickels, and dimes when user is finished with their purchase
         MathContext scale = new MathContext(2);
         BigDecimal quarter = new BigDecimal(0.25, scale);
         BigDecimal dime = new BigDecimal(0.10, scale);
         BigDecimal nickel = new BigDecimal(0.05, scale);
-
+        BigDecimal[] coins = {quarter,dime,nickel};
         BigDecimal[] change = new BigDecimal[3];
-        BigDecimal[] idunno = new BigDecimal[2];
+        BigDecimal[] changeMath = new BigDecimal[2];
 
-        idunno = currentBalance.divideAndRemainder(quarter);
-
-        change[0] = idunno[0];
-        currentBalance = idunno[1];
-
-        idunno = currentBalance.divideAndRemainder(dime);
-
-        change[1] = idunno[0];
-        currentBalance = idunno[1];
-        idunno = currentBalance.divideAndRemainder(nickel);
-
-        change[2] = idunno[0];
-        setCurrentBalance(BigDecimal.ZERO);
+        for(int i =0; i<change.length; i++){
+            changeMath = currentBalance.divideAndRemainder(coins[i]);
+            change[i] = changeMath[0];
+            currentBalance = changeMath[1];
+        }
 
         return change;
     }
